@@ -6,7 +6,7 @@ This project uses environment variables to configure the Keycloak authentication
 
 ### Keycloak Server Configuration
 - `KEYCLOAK_SERVER_URL`: The base URL of your Keycloak server (default: http://localhost:8080)
-- `KEYCLOAK_REALM`: The Keycloak realm name (default: plateforme-realm)
+- `KEYCLOAK_REALM`: The Keycloak realm name 
 
 ### JWT Configuration
 - `SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI`: JWT issuer URI
@@ -38,14 +38,14 @@ This project uses environment variables to configure the Keycloak authentication
 2. **Create Realm**:
    - Access Keycloak admin console at http://localhost:8080
    - Login with admin/admin
-   - Create a new realm called `plateforme-realm`
+   - Create a new realm called `your-realm`
 
 3. **Create Clients**:
    
    **For Auth Service (Spring Boot):**
-   - Client ID: `plateforme-client`
+   - Client ID: `your-client-id`\r  
    - Client Type: `confidential`
-   - Authentication flow: `Standard flow` enabled
+   - Authentication flow: `Standard flow` enabled +other configuration
    - Valid redirect URIs: `http://localhost:8090/login/oauth2/code/keycloak`
    - Web origins: `http://localhost:8090`
 
