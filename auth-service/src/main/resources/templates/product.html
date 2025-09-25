@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Products - AuthService</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="table-container">
+                <h2 class="mb-4">
+                    <i class="fas fa-box me-2"></i>Products Management
+                </h2>
+
+                <div th:if="${isAuthenticated}" class="alert alert-success mb-4">
+                    <i class="fas fa-user me-2"></i>Logged in as: <strong th:text="${username}"></strong>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div th:if="${error}" class="alert alert-danger mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- Tableau des produits -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Products List <span class="badge bg-secondary" th:text="'(' + ${totalProducts} + ')'"></span></h4>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add Product
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" th:if="${not products.empty}">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Stock Status</th>
+                            <th>Total Value</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.id}">ID</td>
+                            <td th:text="${product.name}">Product Name</td>
+                            <td th:text="${product.quantity}">Quantity</td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">Price</td>
+                            <td>
+                                <span th:if="${product.quantity} > 10" class="badge bg-success">In Stock</span>
+                                <span th:if="${product.quantity} > 0 and ${product.quantity} <= 10"
+                                      class="badge bg-warning">Low Stock</span>
+                                <span th:if="${product.quantity} == 0" class="badge bg-danger">Out of Stock</span>
+                            </td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(product.quantity * product.price, 1, 2)}">
+                                Total Value
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Message si pas de produits -->
+                    <div th:if="${products.empty}" class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No products found.
+                    </div>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Total Products</h5>
+                                        <h2 th:text="${totalProducts}">0</h2>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-boxes fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">In Stock</h5>
+                                        <h2 th:text="${inStock}">0</h2>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Low Stock</h5>
+                                        <h2 th:text="${lowStock}">0</h2>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-danger mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Out of Stock</h5>
+                                        <h2 th:text="${outOfStock}">0</h2>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-times-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulaire d'ajout (caché par défaut) -->
+                <div class="mt-4" id="addProductForm" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-plus me-2"></i>Add New Product
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="productName" class="form-label">Product Name</label>
+                                            <input type="text" class="form-control" id="productName" placeholder="Enter product name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="productId" class="form-label">Product ID</label>
+                                            <input type="text" class="form-control" id="productId" placeholder="Enter product ID">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="productPrice" class="form-label">Price ($)</label>
+                                            <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="productQuantity" class="form-label">Quantity</label>
+                                            <input type="number" class="form-control" id="productQuantity" placeholder="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="productDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="productDescription" rows="3" placeholder="Enter product description"></textarea>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-1"></i>Save Product
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hideAddForm()">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fonction pour afficher le formulaire d'ajout
+    function showAddForm() {
+        document.getElementById('addProductForm').style.display = 'block';
+    }
+
+    // Fonction pour cacher le formulaire d'ajout
+    function hideAddForm() {
+        document.getElementById('addProductForm').style.display = 'none';
+    }
+
+    // Ajouter un événement au bouton "Add Product"
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.querySelector('.btn-primary');
+        if (addButton) {
+            addButton.addEventListener('click', showAddForm);
+        }
+    });
+</script>
+
+</body>
+</html>

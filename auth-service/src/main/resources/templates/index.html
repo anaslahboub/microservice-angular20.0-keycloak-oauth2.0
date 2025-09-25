@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="jumbotron bg-light p-5 rounded-lg m-4">
+        <h1 class="display-4"><i class="fas fa-lock me-2"></i>Authentication Service</h1>
+        <p class="lead">Welcome to the Person Management System with secure authentication</p>
+        <hr class="my-4">
+        <p>Manage users, control access, and monitor activity with our comprehensive auth service.</p>
+        <a class="btn btn-primary btn-lg me-2" th:href="@{/persons}" role="button">
+            <i class="fas fa-users me-1"></i> View Persons
+        </a>
+        <a class="btn btn-outline-secondary btn-lg" href="#" role="button">
+            <i class="fas fa-info-circle me-1"></i> Learn More
+        </a>
+    </div>
+
+    <div class="row m-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Secure Authentication</h5>
+                    <p class="card-text">Industry-standard security practices to protect user data and credentials.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Easy Management</h5>
+                    <p class="card-text">Intuitive interface for managing users, roles, and permissions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Activity Monitoring</h5>
+                    <p class="card-text">Track user activity and access patterns with comprehensive logging.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

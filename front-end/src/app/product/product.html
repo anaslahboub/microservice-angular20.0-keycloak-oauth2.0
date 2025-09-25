@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <div class="p3">
+        <div class="card">
+            <div class="card-body">
+                <h2>Product Component</h2>
+                <p>This is the Product component.</p>
+
+                <div class="table" >
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>   
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let product of products">
+                            <td>{{product.id}}</td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.price}}</td>
+                            <td>{{product.quantity}}</td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>

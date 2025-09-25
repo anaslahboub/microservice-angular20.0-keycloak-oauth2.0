@@ -1,0 +1,73 @@
+/* Container and card */
+.container {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 2rem 1rem;
+}
+.card {
+	border-radius: 12px;
+	box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+	border: none;
+	background: #fff;
+}
+.card-body {
+	padding: 2rem;
+}
+
+/* Table styles */
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1.5rem;
+	background: #f9f9f9;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.table th, .table td {
+	padding: 0.75rem 1rem;
+	text-align: left;
+}
+.table th {
+	background: #f1f3f6;
+	font-weight: 600;
+	color: #333;
+}
+.table tr:nth-child(even) {
+	background: #f6f8fa;
+}
+.table tr:hover {
+	background: #e9ecef;
+	transition: background 0.2s;
+}
+
+/* Responsive table */
+@media (max-width: 600px) {
+	.table, .table thead, .table tbody, .table th, .table td, .table tr {
+		display: block;
+	}
+	.table thead {
+		display: none;
+	}
+	.table tr {
+		margin-bottom: 1rem;
+		border-bottom: 2px solid #eee;
+	}
+	.table td {
+		position: relative;
+		padding-left: 50%;
+		min-height: 2.5rem;
+		border: none;
+		background: #fff;
+	}
+	.table td:before {
+		position: absolute;
+		left: 1rem;
+		top: 0.75rem;
+		width: 45%;
+		white-space: nowrap;
+		font-weight: bold;
+		color: #888;
+		content: attr(data-label);
+	}
+}
