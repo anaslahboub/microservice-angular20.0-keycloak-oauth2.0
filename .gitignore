@@ -5,7 +5,7 @@
 .env.production
 *.env
 !.env.example
-
+.env.global
 # IDE and Editor files
 .idea/
 .vscode/
