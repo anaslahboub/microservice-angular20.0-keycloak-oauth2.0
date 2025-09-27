@@ -6,6 +6,13 @@
 *.env
 !.env.example
 .env.global
+
+# Service-specific environment files with real credentials
+auth-service/.env.auth
+inventory-service/.env.inventory
+# Keep example files for template reference
+!auth-service/.env.auth.example
+!inventory-service/.env.inventory.example
 # IDE and Editor files
 .idea/
 .vscode/
