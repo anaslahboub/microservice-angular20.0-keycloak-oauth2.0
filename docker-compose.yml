@@ -1,0 +1,141 @@
+services:
+   mysql-db:
+     image: mariadb:10.6
+     container_name: mysql-db
+     restart: always
+     user: root
+     privileged: true
+     volumes:
+       - mysql_data:/var/lib/mysql
+     environment:
+       MYSQL_DATABASE: inventory-db
+       MYSQL_USER: anas
+       MYSQL_PASSWORD: root
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_ALLOW_EMPTY_PASSWORD: yes
+     command: >
+       bash -c "
+       docker-entrypoint.sh mysqld &
+       sleep 30;
+       mysql -u root -proot -e 'CREATE DATABASE IF NOT EXISTS \`persons-db\`;';
+       wait
+       "
+     ports:
+      - 3306:3306
+     healthcheck:
+      test: ["CMD","mysqladmin","ping","-h","localhost"]
+      timeout: 10s
+      retries: 2
+      interval: 10s
+   phpmyadmin:
+     image: phpmyadmin
+     container_name: phpmyadmin
+     restart: always
+     ports:
+       - 9999:80
+     environment:
+       PMA_HOST: mysql-db
+       PMA_PORT: 3306
+       PMA_ARBTARY: 1
+       
+   # Keycloak Database
+   keycloak-db:
+     image: postgres:15
+     container_name: keycloak-db
+     restart: always
+     volumes:
+       - keycloak_data:/var/lib/postgresql/data
+     environment:
+       POSTGRES_DB: keycloak
+       POSTGRES_USER: keycloak
+       POSTGRES_PASSWORD: keycloak
+     ports:
+       - 5432:5432
+     healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+       interval: 10s
+       timeout: 5s
+       retries: 4
+
+
+   pgadmin4:
+     image: dpage/pgadmin4
+     container_name: pgadmin4_container
+     restart: always
+     ports:
+       - 8888:80
+     environment:
+       PGADMIN_DEFAULT_EMAIL: anas.lahboub@edu.uiz.ac.ma
+       PGADMIN_DEFAULT_PASSWORD: root
+     volumes:
+       - pgadmin_data:/var/lib/pgadmin
+
+   # Keycloak Server
+   keycloak:
+     image: quay.io/keycloak/keycloak:23.0
+     container_name: keycloak
+     restart: always
+     command:
+       - start-dev
+       - --import-realm
+     environment:
+       KEYCLOAK_ADMIN: admin
+       KEYCLOAK_ADMIN_PASSWORD: admin
+       KC_DB: postgres
+       KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+       KC_DB_USERNAME: keycloak
+       KC_DB_PASSWORD: keycloak
+       KC_HOSTNAME: localhost
+       KC_HOSTNAME_PORT: 8080
+       KC_HEALTH_ENABLED: true
+     ports:
+       - 8080:8080
+     expose:
+       - 8080
+     depends_on:
+       keycloak-db:
+         condition: service_healthy
+     volumes:
+       - ./keycloak/import:/opt/keycloak/data/import
+     healthcheck:
+       test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8080' && echo 'Keycloak is ready' && exit 0 || exit 1"]
+       interval: 30s
+       timeout: 5s
+       retries: 3
+       start_period: 60s
+
+   inventory-service:
+    build: ./inventory-service
+    container_name: inventory-service
+    env_file:
+      - .env.global
+      - ./inventory-service/.env.inventory
+    ports:
+      - 8091:8091
+    expose:
+      - 8091
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+
+   person-service-themlef:
+     build: ./auth-service
+     container_name: person-service-themlef
+     env_file:
+       - .env.global
+       - ./auth-service/.env.auth
+     ports:
+       - 8090:8090
+     expose:
+       - 8090
+     depends_on:
+       mysql-db:
+         condition: service_healthy
+       keycloak:
+         condition: service_healthy
+
+volumes:
+  mysql_data:
+  keycloak_data:
+  pgadmin_data:

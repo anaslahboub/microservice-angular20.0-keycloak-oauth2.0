@@ -6,14 +6,19 @@ import lombok.*;
 
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor @Builder @ToString @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Getter
+@Setter
 public class Person {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
-
-
 }
+
