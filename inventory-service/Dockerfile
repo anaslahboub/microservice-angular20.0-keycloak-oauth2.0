@@ -4,6 +4,7 @@ FROM openjdk:21-oracle
 LABEL authors="anaslahboub"
 LABEL description="Inventory Service for Spring Boot Keycloak Integration"
 
+
 # Create application directory
 WORKDIR /app
 

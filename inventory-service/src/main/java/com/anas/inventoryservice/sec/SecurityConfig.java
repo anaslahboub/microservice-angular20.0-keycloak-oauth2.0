@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf->csrf.disable())
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/api/customers/**").hasAuthority("USER"))
+                //.authorizeHttpRequests(ar->ar.requestMatchers("/api/products/**").permitAll())
                 .authorizeHttpRequests(ar->ar.requestMatchers("/swagger-ui.html","swagger-ui/**","/v3/**", "/h2-console/**").permitAll())
                 .headers(h->h.frameOptions(fo->fo.disable()))
                 .authorizeHttpRequests(ar->ar.anyRequest().authenticated())

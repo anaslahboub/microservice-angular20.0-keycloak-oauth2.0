@@ -57,7 +57,6 @@ services:
        timeout: 5s
        retries: 4
 
-
    pgadmin4:
      image: dpage/pgadmin4
      container_name: pgadmin4_container
@@ -118,13 +117,14 @@ services:
       mysql-db:
         condition: service_healthy
 
-
    person-service-themlef:
      build: ./auth-service
      container_name: person-service-themlef
      env_file:
        - .env.global
        - ./auth-service/.env.auth
+     environment:
+       - KEYCLOAK_SERVER_URL=http://localhost:8080
      ports:
        - 8090:8090
      expose:
@@ -134,6 +134,15 @@ services:
          condition: service_healthy
        keycloak:
          condition: service_healthy
+
+   angular-app:
+     build: ./front-end
+     container_name: angular-app
+     ports:
+       - 4200:80
+     expose:
+       - 80
+     restart: always
 
 volumes:
   mysql_data:
